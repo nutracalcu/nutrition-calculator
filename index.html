@@ -1,798 +1,814 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Supplement Calculator (Reversed)</title>
+    <style>
+        /* General Body & Layout Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 8px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        /* Tab System Styles */
+        .tabs {
+            display: flex;
+            margin-bottom: -1px; /* Overlap border */
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            /* Reset button-specific styles for accessibility improvement */
+            font-family: inherit;
+            font-size: 1em;
+        }
+
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 0 5px 5px 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Input & Form Styles */
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select, input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .calculate-btn {
+            grid-column: span 2;
+            margin-top: 10px;
+        }
+
+        button:hover, .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Unit Selection (Radio Buttons) */
+        .unit-selection {
+            grid-column: span 2;
+            margin: 10px 0;
+        }
+
+        .unit-selection label {
+            margin-right: 15px;
+            font-weight: normal;
+        }
+
+        .unit-selection input {
+            margin-right: 5px;
+        }
+
+        /* Error Message Style */
+        .error-message {
+            grid-column: span 2;
+            color: #c0392b;
+            text-align: center;
+            margin: -5px 0 10px 0;
+            font-weight: bold;
+        }
+
+        /* Results Section Styles */
+        .results-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .secondary-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+
+            .calculate-btn {
+                grid-column: span 1;
+            }
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Nutrition Supplement Calculator&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* General Body &amp; Layout Styles */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.6;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #333;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>max-width: 1200px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 auto;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f5f7fa;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>header {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 30px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #2c3e50;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>h1 {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 2.2em;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.subtitle {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-style: italic;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.9;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Tab System Styles */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tabs {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: -1px; /* Overlap border */</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 1px solid #ddd;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tab {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f1f1f1;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #ddd;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 5px 5px 0 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-right: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>/* Reset button-specific styles for accessibility improvement */</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: inherit;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1em;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tab.active {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #3498db;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-color: #3498db;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tab-content {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 0 5px 5px 5px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 2px 5px rgba(0,0,0,0.1);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tab-content.active {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: block;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Input &amp; Form Styles */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.input-section {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: 1fr 2fr;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>label {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>select, input[type="number"] {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #ddd;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>button {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #3498db;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 4px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 16px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.calculate-btn {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>grid-column: span 2;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>button:hover, .calculate-btn:hover {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #2980b9;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Unit Selection (Radio Buttons) */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.unit-selection {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>grid-column: span 2;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 10px 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.unit-selection label {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-right: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: normal;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.unit-selection input {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-right: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Error Message Style */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.error-message {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>grid-column: span 2;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #c0392b;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: -5px 0 10px 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Results Section Styles */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.results-section {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f9f9f9;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.result-row {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: space-between;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding-bottom: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 1px solid #eee;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.result-row:last-child {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: none;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.result-label {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>table {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-collapse: collapse;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 20px 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>th, td {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: left;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-bottom: 1px solid #ddd;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>th {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #2c3e50;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>tr:nth-child(even) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #f2f2f2;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.secondary-info {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background-color: #e8f4fc;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 5px;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Responsive Design */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 768px) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>.input-section {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>grid-template-columns: 1fr;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>.calculate-btn {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>grid-column: span 1;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;header&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;Nutrition Supplement Calculator&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;p class="subtitle"&gt;Calculate elemental amounts and RDA percentages for minerals and vitamins&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="tabs"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="tab active" data-tab="minerals"&gt;Minerals&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="tab" data-tab="vitamins"&gt;Vitamins&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="minerals" class="tab-content active"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="input-section"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;label for="mineral-select"&gt;Select Mineral:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;select id="mineral-select"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value=""&gt;-- Select Mineral --&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/select&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;label for="mineral-salt-form"&gt;Salt Form:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;select id="mineral-salt-form"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value=""&gt;-- Select Mineral First --&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/select&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;label for="mineral-dose"&gt;Your Supplement Dose (mg):&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="number" id="mineral-dose" step="0.01" min="0"&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="mineral-error" class="error-message"&gt;&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button id="calculate-mineral" class="calculate-btn"&gt;Calculate&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="results-section" id="mineral-results" style="display: none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="result-row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="result-label"&gt;Elemental Amount:&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;span id="elemental-mineral-result"&gt;0 mg&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3&gt;RDA Percentage by Age/Gender Group&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;table&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th&gt;Group&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th&gt;RDA (mg/day)&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th&gt;% RDA&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;tbody id="mineral-rda-results"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/table&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="secondary-info" id="mineral-secondary-info"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="vitamins" class="tab-content"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="input-section"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;label for="vitamin-select"&gt;Select Vitamin:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;select id="vitamin-select"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value=""&gt;-- Select Vitamin --&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/select&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;label for="vitamin-form"&gt;Form:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;select id="vitamin-form"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;option value=""&gt;-- Select Vitamin First --&lt;/option&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/select&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="unit-selection"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label&gt;Units:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="radio" name="vitamin-units" value="mg" id="vitamin-mg" checked&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="vitamin-mg"&gt;mg&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="radio" name="vitamin-units" value="mcg" id="vitamin-mcg"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="vitamin-mcg"&gt;mcg&lt;/label&gt;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="radio" name="vitamin-units" value="IU" id="vitamin-IU"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="vitamin-IU"&gt;IU&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;label for="vitamin-dose"&gt;Your Supplement Dose:&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="number" id="vitamin-dose" step="0.01" min="0"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="vitamin-error" class="error-message"&gt;&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button id="calculate-vitamin" class="calculate-btn"&gt;Calculate&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="results-section" id="vitamin-results" style="display: none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="result-row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="result-label"&gt;Elemental Amount:&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;span id="elemental-vitamin-result"&gt;0 mg&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3&gt;RDA Percentage by Age/Gender Group&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;table&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th&gt;Group&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th&gt;RDA&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;th&gt;% RDA&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;tbody id="vitamin-rda-results"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/table&gt;</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="secondary-info" id="vitamin-secondary-info"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const mineralData = {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>calcium: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Calcium",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "carbonate", name: "Calcium Carbonate", percentage: 0.40 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "citrate", name: "Calcium Citrate", percentage: 0.2407 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "citrate-maleate", name: "Calcium Citrate Maleate", percentage: 0.1845 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "asparto-glycinate", name: "Calcium Asparto Glycinate", percentage: 0.1529 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "phosphate", name: "Calcium Phosphate", percentage: 0.3876, secondary: { name: "Phosphorous", percentage: 0.1996 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "orotate", name: "Calcium Orotate", percentage: 0.1144 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "gluconate", name: "Calcium Gluconate", percentage: 0.0931 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "lactate", name: "Calcium Lactate", percentage: 0.1836 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "pantothenate", name: "Calcium Pantothenate", percentage: 0.0840, secondary: { name: "Pantothenic Acid", percentage: 0.9160 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "dicalcium-phosphate", name: "Dicalcium Phosphate", percentage: 0.2945, secondary: { name: "Phosphorous", percentage: 0.2276 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "ascorbate", name: "Calcium L-Ascorbate Dihydrate", percentage: 0.0940, secondary: { name: "Ascorbic Acid", percentage: 0.8260 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "citrate-tetrahydrate", name: "Citrate Tetrahydrate Calcium", percentage: 0.21, secondary: { name: "Citric Acid", percentage: 0.3367 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "citrate-malate", name: "Calcium Citrate malate", percentage: 0.66 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "aspartate", name: "Calcium Aspartate", percentage: 0.2341 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "lysinate", name: "Calcium Lysinate", percentage: 0.1212 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Infants (0-6m)", rda: 200 }, { name: "Infants (7-12m)", rda: 260 }, { name: "Children (1-3y)", rda: 700 }, { name: "Children (4-8y)", rda: 1000 }, { name: "Adolescents (9-18y)", rda: 1300 }, { name: "Adults (19-50y)", rda: 1000 }, { name: "Men (51-70y)", rda: 1000 }, { name: "Women (51-70y)", rda: 1200 }, { name: "Adults (71+y)", rda: 1200 }, { name: "Pregnancy/Lactation (14-18y)", rda: 1300 }, { name: "Pregnancy/Lactation (19-50y)", rda: 1000 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>chromium: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Chromium",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "picolinate", name: "Chromium Picolinate", percentage: 0.1242 }, { id: "chloride", name: "Chromium Chloride", percentage: 0.3283, secondary: { name: "Chloride", percentage: 0.2238 } }, { id: "nicotinate", name: "Chromium Piconicotinate or Chromium nicotinate", percentage: 0.2986 }, { id: "trioxide", name: "Chromium trioxide", percentage: 0.5199 }, { id: "chloride-hexahydrate", name: "Chromium Chloride Hexahydrate", percentage: 0.1951 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19-50y)", rda: 0.035 }, { name: "Women (19-50y)", rda: 0.025 }, { name: "Pregnancy", rda: 0.030 }, { name: "Lactation", rda: 0.045 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>copper: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Copper",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "sulphate", name: "Copper Sulphate or Cupric Sulphate", percentage: 0.3981 }, { id: "citrate", name: "Cupric Citrate", percentage: 0.1990 }, { id: "gluconate", name: "Copper Gluconate", percentage: 0.14 }, { id: "oxide", name: "Cupric Oxide", percentage: 0.7988 }, { id: "sulphate-pentahydrate", name: "Copper Sulphate Pentahydrate", percentage: 0.2545 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 0.9 }, { name: "Pregnancy", rda: 1.0 }, { name: "Lactation", rda: 1.3 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>iron: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Iron (Ferrous)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "gluconate", name: "Ferrous Gluconate", percentage: 0.1158 }, { id: "ammonium-citrate", name: "Ferric Ammonium Citrate", percentage: 0.2131 }, { id: "ascorbate", name: "Ferrous Ascorbate", percentage: 0.1375 }, { id: "bisglycinate", name: "Ferrous Bisglycinate", percentage: 0.2737 }, { id: "sulphate", name: "Ferrous Sulphate", percentage: 0.3675 }, { id: "aspartoglycinate", name: "Ferrous Aspartoglycinate", percentage: 0.2131 }, { id: "fumarate", name: "Ferrous Fumarate", percentage: 0.3286 }, { id: "choline-citrate", name: "Iron Choline Citrate", percentage: 0.1590 }, { id: "pyrophosphate", name: "Ferric Pyrophosphate", percentage: 0.0749 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Children (1-3y)", rda: 7 }, { name: "Children (4-8y)", rda: 10 }, { name: "Men (19-50y)", rda: 8 }, { name: "Women (19-50y)", rda: 18 }, { name: "Adults (51+y)", rda: 8 }, { name: "Pregnancy", rda: 27 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>magnesium: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Magnesium",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "oxide", name: "Magnesium Oxide", percentage: 0.6030 }, { id: "dioxide", name: "Magnesium Dioxide", percentage: 0.4317 }, { id: "sulfate", name: "Magnesium Sulfate", percentage: 0.20 }, { id: "glycinate", name: "Magnesium Glycinate", percentage: 0.1409 }, { id: "biglycinate", name: "Magnesium Biglycinate", percentage: 0.14 }, { id: "hydroxide", name: "Magnesium Hydroxide", percentage: 0.4166 }, { id: "gluconate", name: "Magnesium Gluconate", percentage: 0.0539 }, { id: "chloride", name: "Magnesium Chloride", percentage: 0.2552 }, { id: "citrate", name: "Magnesium Citrate", percentage: 0.1133 }, { id: "carbonate", name: "Magnesium carbonate", percentage: 0.2882 }, { id: "l-theonate", name: "Magnesium L Theonate", percentage: 0.0825 }, { id: "acetyl-taurate", name: "Magnesium Acetyl Taurate", percentage: 0.0681 }, { id: "ascorbate", name: "Magnesium Ascorbate", percentage: 0.0648 }, { id: "hydrochloride", name: "Magnesium Hydrochloride", percentage: 0.40 }, { id: "aspartate", name: "Magnesium Aspartate", percentage: 0.0842 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19-30y)", rda: 400 }, { name: "Women (19-30y)", rda: 310 }, { name: "Men (31+y)", rda: 420 }, { name: "Women (31+y)", rda: 320 }, { name: "Pregnancy", rda: 350 }, { name: "Lactation", rda: 310 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>manganese: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Manganese",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "sulphate", name: "Manganese Sulphate", percentage: 0.3637 }, { id: "chloride", name: "Manganese Chloride", percentage: 0.4364 }, { id: "sulphate-monohydrate", name: "Manganese Sulphate Monohydrate", percentage: 0.3249 }, { id: "glycinate", name: "Manganese Glycinate", percentage: 0.2705 }, { id: "oxide", name: "Manganese Oxide", percentage: 0.6318 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 2.3 }, { name: "Women (19+y)", rda: 1.8 }, { name: "Pregnancy", rda: 2.0 }, { name: "Lactation", rda: 2.6 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>molybdenum: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Molybdenum",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "pentoxide", name: "Molybdenum Pentoxide", percentage: 0.6665 }, { id: "sodium-molybdate", name: "from Sodium Molybdate", percentage: 0.4659 }, { id: "sodium-molybdate-dihydrate", name: "from Sodium Molybdate Dihydrate", percentage: 0.3965 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 0.045 }, { name: "Pregnancy/Lactation", rda: 0.050 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>potassium: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Potassium",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "sulfate", name: "Potassium Sulfate", percentage: 0.4486 }, { id: "iodide", name: "Potassium Iodide", percentage: 0.2349, secondary: { name: "Iodine", percentage: 0.7644 } }, { id: "chloride", name: "Potassium Chloride", percentage: 0.5243 }, { id: "citrate", name: "Potassium Citrate", percentage: 0.1275 }, { id: "aspartate", name: "Aspartate Potassium", percentage: 0.1084 }, { id: "magnesium-citrate", name: "Potassium Magnesium Citrate", percentage: 0.1548, secondary: { name: "Magnesium", percentage: 0.0962 } }, { id: "phosphate-monobasic", name: "Potassium Phosphate Monobasic", percentage: 0.2873 }, { id: "carbonate", name: "Potassium Carbonate", percentage: 0.5656 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 3400 }, { name: "Women (19+y)", rda: 2600 }, { name: "Pregnancy", rda: 2900 }, { name: "Lactation", rda: 2800 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>selenium: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Selenium",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "sodium-selenite", name: "from Sodium Selenite", percentage: 0.4565 }, { id: "sodium-selenate", name: "from Sodium Selenate", percentage: 0.4179 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 0.055 }, { name: "Pregnancy", rda: 0.060 }, { name: "Lactation", rda: 0.070 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>sodium: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Sodium",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "bicarbonate", name: "Sodium Bicarbonate", percentage: 0.2735 }, { id: "carbonate", name: "Sodium Carbonate", percentage: 0.2168 }, { id: "chloride", name: "Sodium Chloride", percentage: 0.3932, secondary: { name: "Chloride", percentage: 0.6066 } }, { id: "salycinate", name: "Sodium Salycinate", percentage: 0.1435 }, { id: "salycylate-selenium", name: "Sodium Salycylate (Selenium)", percentage: 0.1135 }, { id: "molybdate", name: "Sodium Molybdate", percentage: 0.1115, secondary: { name: "Molybdenum", percentage: 0.4659 } }, { id: "molybdate-dihydrate", name: "Sodium Molybdate Dihydrate", percentage: 0.0949, secondary: { name: "Molybdenum", percentage: 0.3965 } }, { id: "selenite", name: "Sodium Selenite", percentage: 0.27, secondary: { name: "Selenium", percentage: 0.4565 } }, { id: "selenate", name: "Sodium Selenate", percentage: null, secondary: { name: "Selenium", percentage: 0.4179 } }, { id: "ascorbate", name: "Sodium Ascorbate", percentage: 0.115, secondary: { name: "Ascorbic Acid", percentage: 0.885 } }, { id: "benzoate", name: "Sodium Benzoate", percentage: 0.1594 }, { id: "citrate", name: "Sodium Citrate (Trisodium Citrate)", percentage: 0.2671 }, { id: "hydrochloride", name: "Sodium Hydrochloride", percentage: 0.0287 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 1500 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>zinc: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Zinc",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>saltForms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "lactate", name: "Zinc Lactate", percentage: 0.2663 }, { id: "sulphate", name: "Zinc Sulphate", percentage: 0.4049 }, { id: "oxide", name: "Zinc Oxide", percentage: 0.8033 }, { id: "gluconate", name: "Zinc Gluconate", percentage: 0.1434 }, { id: "sulphate-monohydrate", name: "Zinc Sulphate Monohydrate", percentage: 0.3642 }, { id: "bisglycinate", name: "Zinc Bisglycinate", percentage: 0.3062 }, { id: "methionine", name: "Zinc Methionine", percentage: 0.2105 }, { id: "sulphate-heptahydrate", name: "Zinc Sulphate Heptahydrate", percentage: 0.2273 }, { id: "acetate", name: "Zinc Acetate", percentage: 0.3564 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 11 }, { name: "Women (19+y)", rda: 8 }, { name: "Pregnancy", rda: 11 }, { name: "Lactation", rda: 12 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const vitaminData = {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>a: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Vitamin A",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "retinyl-acetate", name: "Retinyl Acetate", percentage: 1, conversion: { IUToMg: 0.000344 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "retinyl-palmitate", name: "Retinyl Palmitate", percentage: 1, conversion: { IUToMg: 0.00055 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "beta-carotene", name: "Beta-Carotene", percentage: 1, conversion: { IUToMg: 0.0006 } }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mcg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 900 }, { name: "Women (19+y)", rda: 700 }, { name: "Pregnancy", rda: 770 }, { name: "Lactation", rda: 1300 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>b1: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Thiamine (B1)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "mononitrate", name: "Thiamine Mononitrate", percentage: 0.8105 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "hydrochloride", name: "Thiamine Hydrochloride", percentage: 0.7845 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 1.2 }, { name: "Women (19+y)", rda: 1.1 }, { name: "Pregnancy/Lactation", rda: 1.4 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>b2: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Riboflavin (B2)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "riboflavin", name: "Riboflavin", percentage: 1 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "riboflavin-5-phosphate", name: "Riboflavin 5'-Phosphate", percentage: 0.73 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 1.3 }, { name: "Women (19+y)", rda: 1.1 }, { name: "Pregnancy", rda: 1.4 }, { name: "Lactation", rda: 1.6 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>b3: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Niacin (B3)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "niacin", name: "Niacin", percentage: 1 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "niacinamide", name: "Niacinamide (Nicotinamide)", percentage: 1 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 16 }, { name: "Women (19+y)", rda: 14 }, { name: "Pregnancy", rda: 18 }, { name: "Lactation", rda: 17 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>b5: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Pantothenic Acid (B5)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "calcium-pantothenate", name: "from Calcium Pantothenate", percentage: 0.916 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "d-pantothenic-acid", name: "D-Pantothenic Acid", percentage: 1 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 5 }, { name: "Pregnancy", rda: 6 }, { name: "Lactation", rda: 7 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>b6: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Pyridoxine (B6)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "pyridoxine-hcl", name: "Pyridoxine HCl", percentage: 0.8227 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "pyridoxal-5-phosphate", name: "Pyridoxal 5'-Phosphate (P-5-P)", percentage: 1 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19-50y)", rda: 1.3 }, { name: "Men (51+y)", rda: 1.7 }, { name: "Women (51+y)", rda: 1.5 }, { name: "Pregnancy", rda: 1.9 }, { name: "Lactation", rda: 2.0 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>b7: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Biotin (B7)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [ { id: "biotin", name: "Biotin", percentage: 1 } ],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mcg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 30 }, { name: "Pregnancy", rda: 30 }, { name: "Lactation", rda: 35 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>b9: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Folate (B9)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "folic-acid", name: "Folic Acid", percentage: 1 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "l-methylfolate", name: "L-Methylfolate", percentage: 1 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mcg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 400 }, { name: "Pregnancy", rda: 600 }, { name: "Lactation", rda: 500 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>b12: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Cobalamin (B12)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "cyanocobalamin", name: "Cyanocobalamin", percentage: 1 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "methylcobalamin", name: "Methylcobalamin", percentage: 1 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mcg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 2.4 }, { name: "Pregnancy", rda: 2.6 }, { name: "Lactation", rda: 2.8 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>c: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Ascorbic Acid (C)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "ascorbic-acid", name: "Ascorbic Acid", percentage: 1 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "sodium-ascorbate", name: "from Sodium Ascorbate", percentage: 0.885 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "calcium-ascorbate", name: "from Calcium Ascorbate", percentage: 0.826 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 90 }, { name: "Women (19+y)", rda: 75 }, { name: "Pregnancy", rda: 85 }, { name: "Lactation", rda: 120 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>d: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Calciferol (D)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "cholecalciferol-d3", name: "Cholecalciferol (D3)", percentage: 1, conversion: { IUToMg: 0.000025 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "ergocalciferol-d2", name: "Ergocalciferol (D2)", percentage: 1, conversion: { IUToMg: 0.000025 } }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "IU",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19-70y)", rda: 600 }, { name: "Adults (71+y)", rda: 800 }, { name: "Pregnancy/Lactation", rda: 600 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>e: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Tocopherol (E)",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "d-alpha-tocopherol", name: "d-alpha-tocopherol (natural)", percentage: 1, conversion: { IUToMg: 0.67 } },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "dl-alpha-tocopherol", name: "dl-alpha-tocopherol (synthetic)", percentage: 1, conversion: { IUToMg: 0.45 } }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Adults (19+y)", rda: 15 }, { name: "Pregnancy", rda: 15 }, { name: "Lactation", rda: 19 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>},</p>
-<p class="p1"><span class="Apple-converted-space">            </span>k: {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>name: "Vitamin K",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>forms: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "k1-phytonadione", name: "K1 (Phytonadione)", percentage: 1 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "k2-mk4", name: "K2 (Menaquinone-4)", percentage: 1 },</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ id: "k2-mk7", name: "K2 (Menaquinone-7)", percentage: 1 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>],</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaUnit: "mcg",</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaGroups: [</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>{ name: "Men (19+y)", rda: 120 }, { name: "Women (19+y)", rda: 90 }</p>
-<p class="p1"><span class="Apple-converted-space">                </span>]</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.addEventListener('DOMContentLoaded', () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Function to populate a select dropdown from a data object</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const populateSelect = (selectId, data) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const selectElement = document.getElementById(selectId);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>// Sort the keys alphabetically by the 'name' property</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const sortedKeys = Object.keys(data).sort((a, b) =&gt; data[a].name.localeCompare(data[b].name));</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>sortedKeys.forEach(key =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const option = document.createElement('option');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>option.value = key;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>option.textContent = data[key].name;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>selectElement.appendChild(option);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>});</p>
-<p class="p1"><span class="Apple-converted-space">            </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Populate Mineral and Vitamin dropdowns</p>
-<p class="p1"><span class="Apple-converted-space">            </span>populateSelect('mineral-select', mineralData);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>populateSelect('vitamin-select', vitaminData);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Tab functionality</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.querySelectorAll('.tab').forEach(tab =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>tab.addEventListener('click', () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.querySelectorAll('.tab').forEach(t =&gt; t.classList.remove('active'));</p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.querySelectorAll('.tab-content').forEach(c =&gt; c.classList.remove('active'));</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>tab.classList.add('active');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById(tab.dataset.tab).classList.add('active');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Mineral calculator functionality</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('mineral-select').addEventListener('change', function() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const mineral = this.value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const saltFormSelect = document.getElementById('mineral-salt-form');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>saltFormSelect.innerHTML = '&lt;option value=""&gt;-- Select --&lt;/option&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (mineral &amp;&amp; mineralData[mineral]) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>mineralData[mineral].saltForms.forEach(form =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const option = document.createElement('option');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>option.value = form.id;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>option.textContent = form.name;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>saltFormSelect.appendChild(option);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>});</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('calculate-mineral').addEventListener('click', function() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const mineral = document.getElementById('mineral-select').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const saltFormId = document.getElementById('mineral-salt-form').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const dose = parseFloat(document.getElementById('mineral-dose').value);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const errorDiv = document.getElementById('mineral-error');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const resultsDiv = document.getElementById('mineral-results');</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>errorDiv.textContent = '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>resultsDiv.style.display = 'none';</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (mineral &amp;&amp; saltFormId &amp;&amp; !isNaN(dose) &amp;&amp; dose &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const mineralInfo = mineralData[mineral];</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const saltForm = mineralInfo.saltForms.find(f =&gt; f.id === saltFormId);</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (!saltForm) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>errorDiv.textContent = 'An error occurred. Please re-select the salt form.';</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>const elementalPercentage = saltForm.percentage;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (typeof elementalPercentage !== 'number') {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>errorDiv.textContent = `Calculation for "${saltForm.name}" is not available due to missing data.`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>const elementalAmount = dose * elementalPercentage;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById('elemental-mineral-result').textContent = elementalAmount.toFixed(3) + ' mg';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>resultsDiv.style.display = 'block';</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>const rdaResults = document.getElementById('mineral-rda-results');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaResults.innerHTML = '';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>mineralInfo.rdaGroups.forEach(group =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const percentage = (elementalAmount / group.rda) * 100;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const row = document.createElement('tr');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>row.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td&gt;${group.name}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td&gt;${group.rda} mg&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td&gt;${percentage.toFixed(1)}%&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>rdaResults.appendChild(row);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>});</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>const secondaryInfo = saltForm.secondary;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const secondaryDiv = document.getElementById('mineral-secondary-info');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (secondaryInfo &amp;&amp; typeof secondaryInfo.percentage === 'number') {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>secondaryDiv.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h4&gt;Secondary Component&lt;/h4&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p&gt;${secondaryInfo.name}: ${(dose * secondaryInfo.percentage).toFixed(2)} mg (${(secondaryInfo.percentage * 100).toFixed(1)}%)&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>secondaryDiv.style.display = 'block';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>secondaryDiv.innerHTML = '';</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>secondaryDiv.style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>errorDiv.textContent = 'Please select a mineral, salt form, and enter a valid dose.';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>// Vitamin calculator functionality</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('vitamin-select').addEventListener('change', function() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const vitamin = this.value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const formSelect = document.getElementById('vitamin-form');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>formSelect.innerHTML = '&lt;option value=""&gt;-- Select --&lt;/option&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (vitamin &amp;&amp; vitaminData[vitamin]) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>vitaminData[vitamin].forms.forEach(form =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const option = document.createElement('option');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>option.value = form.id;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>option.textContent = form.name;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>formSelect.appendChild(option);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>});</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('calculate-vitamin').addEventListener('click', function() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const vitamin = document.getElementById('vitamin-select').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const formId = document.getElementById('vitamin-form').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>let unit = document.querySelector('input[name="vitamin-units"]:checked').value;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const dose = parseFloat(document.getElementById('vitamin-dose').value);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const errorDiv = document.getElementById('vitamin-error');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const resultsDiv = document.getElementById('vitamin-results');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>errorDiv.textContent = '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>resultsDiv.style.display = 'none';</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (vitamin &amp;&amp; formId &amp;&amp; !isNaN(dose) &amp;&amp; dose &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const vitaminInfo = vitaminData[vitamin];</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const form = vitaminInfo.forms.find(f =&gt; f.id === formId);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (!form) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>errorDiv.textContent = 'An error occurred. Please re-select the vitamin form.';</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>// Convert the dose to mg for a standardized calculation</p>
-<p class="p1"><span class="Apple-converted-space">                </span>let doseInMg = dose;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (unit === 'mcg') {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>doseInMg = dose / 1000;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>} else if (unit === 'IU') {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (!form.conversion || !form.conversion.IUToMg) {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>errorDiv.textContent = `IU to mg conversion is not available for ${form.name}.`;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>doseInMg = dose * form.conversion.IUToMg;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>const elementalPercentage = form.percentage;</p>
-<p class="p1"><span class="Apple-converted-space">                 </span>if (typeof elementalPercentage !== 'number') {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>errorDiv.textContent = `Calculation for "${form.name}" is not available due to missing data.`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const elementalAmount = doseInMg * elementalPercentage;</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>document.getElementById('elemental-vitamin-result').textContent = elementalAmount.toFixed(3) + ' mg';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>resultsDiv.style.display = 'block';</p>
-<p class="p2"><span class="Apple-converted-space">                </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>const rdaResults = document.getElementById('vitamin-rda-results');</p>
-<p class="p1"><span class="Apple-converted-space">                </span>rdaResults.innerHTML = '';</p>
-<p class="p1"><span class="Apple-converted-space">                </span>vitaminInfo.rdaGroups.forEach(group =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const rdaValue = group.rda;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>let rdaUnit = vitaminInfo.rdaUnit; // Use the unit specified in the data</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>// Convert RDA to mg for comparison</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>let rdaInMg = rdaValue;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>if (rdaUnit === 'mcg') {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>rdaInMg = rdaValue / 1000;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>} else if (rdaUnit === 'IU') {</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>// All IU vitamins need conversion data to be compared to mg</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>if (!vitaminData.d.forms[0].conversion.IUToMg) {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                           </span>console.error("Critical conversion data missing for Vitamin D");</p>
-<p class="p1"><span class="Apple-converted-space">                           </span>return;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>// For simplicity, we use Vit D conversion as a proxy if others are missing.</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>// A more robust system would ensure every IU vitamin form has this data.</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>const convFactor = form.conversion?.IUToMg || vitaminData.d.forms[0].conversion.IUToMg;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>rdaInMg = rdaValue * convFactor;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const percentage = (elementalAmount / rdaInMg) * 100;</p>
-<p class="p2"><span class="Apple-converted-space">                    </span></p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const row = document.createElement('tr');</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>row.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td&gt;${group.name}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td&gt;${rdaValue} ${rdaUnit}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;td&gt;${percentage.toFixed(1)}%&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>rdaResults.appendChild(row);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>errorDiv.textContent = 'Please select a vitamin, form, and enter a valid dose.';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <header>
+        <h1>Nutrition Supplement Calculator (Reversed)</h1>
+        <p class="subtitle">Calculate required salt dose from your desired elemental amount</p>
+    </header>
+    
+    <div class="tabs">
+        <button class="tab active" data-tab="minerals">Minerals</button>
+        <button class="tab" data-tab="vitamins">Vitamins</button>
+    </div>
+    
+    <div id="minerals" class="tab-content active">
+        <div class="input-section">
+            <label for="mineral-select">Select Mineral:</label>
+            <select id="mineral-select">
+                <option value="">-- Select Mineral --</option>
+            </select>
+            
+            <label for="mineral-salt-form">Salt Form:</label>
+            <select id="mineral-salt-form">
+                <option value="">-- Select Mineral First --</option>
+            </select>
+            
+            <label for="mineral-elemental-amount">Desired Elemental Amount (mg):</label>
+            <input type="number" id="mineral-elemental-amount" step="0.01" min="0">
+            
+            <div id="mineral-error" class="error-message"></div>
+            
+            <button id="calculate-mineral" class="calculate-btn">Calculate</button>
+        </div>
+        
+        <div class="results-section" id="mineral-results" style="display: none;">
+            <div class="result-row">
+                <span class="result-label">Required Salt Form Dose (mg):</span>
+                <span id="required-salt-dose-result">0 mg</span>
+            </div>
+            
+            <h3>RDA Percentage by Age/Gender Group</h3>
+            <p style="font-size: 0.9em; text-align: center; margin-top: -15px;">(Based on your desired elemental amount)</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Group</th>
+                        <th>RDA (mg/day)</th>
+                        <th>% RDA</th>
+                    </tr>
+                </thead>
+                <tbody id="mineral-rda-results">
+                </tbody>
+            </table>
+            
+            <div class="secondary-info" id="mineral-secondary-info" style="display: none;">
+            </div>
+        </div>
+    </div>
+    
+    <div id="vitamins" class="tab-content">
+        <div class="input-section">
+            <label for="vitamin-select">Select Vitamin:</label>
+            <select id="vitamin-select">
+                <option value="">-- Select Vitamin --</option>
+            </select>
+            
+            <label for="vitamin-form">Form:</label>
+            <select id="vitamin-form">
+                <option value="">-- Select Vitamin First --</option>
+            </select>
+            
+            <div class="unit-selection">
+                <label>Units for Elemental Amount:</label>
+                <input type="radio" name="vitamin-units" value="mg" id="vitamin-mg" checked>
+                <label for="vitamin-mg">mg</label>
+                
+                <input type="radio" name="vitamin-units" value="mcg" id="vitamin-mcg">
+                <label for="vitamin-mcg">mcg</label>
+                
+                <input type="radio" name="vitamin-units" value="IU" id="vitamin-IU">
+                <label for="vitamin-IU">IU</label>
+            </div>
+            
+            <label for="vitamin-elemental-amount">Desired Elemental Amount:</label>
+            <input type="number" id="vitamin-elemental-amount" step="0.01" min="0">
+
+            <div id="vitamin-error" class="error-message"></div>
+            
+            <button id="calculate-vitamin" class="calculate-btn">Calculate</button>
+        </div>
+        
+        <div class="results-section" id="vitamin-results" style="display: none;">
+            <div class="result-row">
+                <span class="result-label">Required Salt Form Dose (mg):</span>
+                <span id="required-vitamin-dose-result">0 mg</span>
+            </div>
+            
+            <h3>RDA Percentage by Age/Gender Group</h3>
+            <p style="font-size: 0.9em; text-align: center; margin-top: -15px;">(Based on your desired elemental amount)</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Group</th>
+                        <th>RDA</th>
+                        <th>% RDA</th>
+                    </tr>
+                </thead>
+                <tbody id="vitamin-rda-results">
+                </tbody>
+            </table>
+            
+            <div class="secondary-info" id="vitamin-secondary-info" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA OBJECTS (mineralData, vitaminData) ---
+        // (Data objects are unchanged and remain here)
+        const mineralData = {
+            calcium: {
+                name: "Calcium",
+                saltForms: [
+                    { id: "carbonate", name: "Calcium Carbonate", percentage: 0.40 },
+                    { id: "citrate", name: "Calcium Citrate", percentage: 0.2407 },
+                    { id: "citrate-maleate", name: "Calcium Citrate Maleate", percentage: 0.1845 },
+                    { id: "asparto-glycinate", name: "Calcium Asparto Glycinate", percentage: 0.1529 },
+                    { id: "phosphate", name: "Calcium Phosphate", percentage: 0.3876, secondary: { name: "Phosphorous", percentage: 0.1996 } },
+                    { id: "orotate", name: "Calcium Orotate", percentage: 0.1144 },
+                    { id: "gluconate", name: "Calcium Gluconate", percentage: 0.0931 },
+                    { id: "lactate", name: "Calcium Lactate", percentage: 0.1836 },
+                    { id: "pantothenate", name: "Calcium Pantothenate", percentage: 0.0840, secondary: { name: "Pantothenic Acid", percentage: 0.9160 } },
+                    { id: "dicalcium-phosphate", name: "Dicalcium Phosphate", percentage: 0.2945, secondary: { name: "Phosphorous", percentage: 0.2276 } },
+                    { id: "ascorbate", name: "Calcium L-Ascorbate Dihydrate", percentage: 0.0940, secondary: { name: "Ascorbic Acid", percentage: 0.8260 } },
+                    { id: "citrate-tetrahydrate", name: "Citrate Tetrahydrate Calcium", percentage: 0.21, secondary: { name: "Citric Acid", percentage: 0.3367 } },
+                    { id: "aspartate", name: "Calcium Aspartate", percentage: 0.2341 },
+                    { id: "lysinate", name: "Calcium Lysinate", percentage: 0.1212 }
+                ],
+                rdaGroups: [
+                    { name: "Infants (0-6m)", rda: 200 }, { name: "Infants (7-12m)", rda: 260 }, { name: "Children (1-3y)", rda: 700 }, { name: "Children (4-8y)", rda: 1000 }, { name: "Adolescents (9-18y)", rda: 1300 }, { name: "Adults (19-50y)", rda: 1000 }, { name: "Men (51-70y)", rda: 1000 }, { name: "Women (51-70y)", rda: 1200 }, { name: "Adults (71+y)", rda: 1200 }, { name: "Pregnancy/Lactation (14-18y)", rda: 1300 }, { name: "Pregnancy/Lactation (19-50y)", rda: 1000 }
+                ]
+            },
+            chromium: {
+                name: "Chromium",
+                saltForms: [
+                    { id: "picolinate", name: "Chromium Picolinate", percentage: 0.1242 }, { id: "chloride", name: "Chromium Chloride", percentage: 0.3283, secondary: { name: "Chloride", percentage: 0.2238 } }, { id: "nicotinate", name: "Chromium Piconicotinate or Chromium nicotinate", percentage: 0.2986 }, { id: "trioxide", name: "Chromium trioxide", percentage: 0.5199 }, { id: "chloride-hexahydrate", name: "Chromium Chloride Hexahydrate", percentage: 0.1951 }
+                ],
+                rdaGroups: [
+                    { name: "Men (19-50y)", rda: 0.035 }, { name: "Women (19-50y)", rda: 0.025 }, { name: "Pregnancy", rda: 0.030 }, { name: "Lactation", rda: 0.045 }
+                ]
+            },
+            copper: {
+                name: "Copper",
+                saltForms: [
+                    { id: "sulphate", name: "Copper Sulphate or Cupric Sulphate", percentage: 0.3981 }, { id: "citrate", name: "Cupric Citrate", percentage: 0.1990 }, { id: "gluconate", name: "Copper Gluconate", percentage: 0.14 }, { id: "oxide", name: "Cupric Oxide", percentage: 0.7988 }, { id: "sulphate-pentahydrate", name: "Copper Sulphate Pentahydrate", percentage: 0.2545 }
+                ],
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 0.9 }, { name: "Pregnancy", rda: 1.0 }, { name: "Lactation", rda: 1.3 }
+                ]
+            },
+            iron: {
+                name: "Iron (Ferrous)",
+                saltForms: [
+                    { id: "gluconate", name: "Ferrous Gluconate", percentage: 0.1158 }, { id: "ammonium-citrate", name: "Ferric Ammonium Citrate", percentage: 0.2131 }, { id: "ascorbate", name: "Ferrous Ascorbate", percentage: 0.1375 }, { id: "bisglycinate", name: "Ferrous Bisglycinate", percentage: 0.2737 }, { id: "sulphate", name: "Ferrous Sulphate", percentage: 0.3675 }, { id: "aspartoglycinate", name: "Ferrous Aspartoglycinate", percentage: 0.2131 }, { id: "fumarate", name: "Ferrous Fumarate", percentage: 0.3286 }, { id: "choline-citrate", name: "Iron Choline Citrate", percentage: 0.1590 }, { id: "pyrophosphate", name: "Ferric Pyrophosphate", percentage: 0.0749 }
+                ],
+                rdaGroups: [
+                    { name: "Children (1-3y)", rda: 7 }, { name: "Children (4-8y)", rda: 10 }, { name: "Men (19-50y)", rda: 8 }, { name: "Women (19-50y)", rda: 18 }, { name: "Adults (51+y)", rda: 8 }, { name: "Pregnancy", rda: 27 }
+                ]
+            },
+            magnesium: {
+                name: "Magnesium",
+                saltForms: [
+                    { id: "oxide", name: "Magnesium Oxide", percentage: 0.6030 }, { id: "dioxide", name: "Magnesium Dioxide", percentage: 0.4317 }, { id: "sulfate", name: "Magnesium Sulfate", percentage: 0.20 }, { id: "glycinate", name: "Magnesium Glycinate", percentage: 0.1409 }, { id: "biglycinate", name: "Magnesium Biglycinate", percentage: 0.14 }, { id: "hydroxide", name: "Magnesium Hydroxide", percentage: 0.4166 }, { id: "gluconate", name: "Magnesium Gluconate", percentage: 0.0539 }, { id: "chloride", name: "Magnesium Chloride", percentage: 0.2552 }, { id: "citrate", name: "Magnesium Citrate", percentage: 0.1133 }, { id: "carbonate", name: "Magnesium carbonate", percentage: 0.2882 }, { id: "l-theonate", name: "Magnesium L Theonate", percentage: 0.0825 }, { id: "acetyl-taurate", name: "Magnesium Acetyl Taurate", percentage: 0.0681 }, { id: "ascorbate", name: "Magnesium Ascorbate", percentage: 0.0648 }, { id: "hydrochloride", name: "Magnesium Hydrochloride", percentage: 0.40 }, { id: "aspartate", name: "Magnesium Aspartate", percentage: 0.0842 }
+                ],
+                rdaGroups: [
+                    { name: "Men (19-30y)", rda: 400 }, { name: "Women (19-30y)", rda: 310 }, { name: "Men (31+y)", rda: 420 }, { name: "Women (31+y)", rda: 320 }, { name: "Pregnancy", rda: 350 }, { name: "Lactation", rda: 310 }
+                ]
+            },
+            manganese: {
+                name: "Manganese",
+                saltForms: [
+                    { id: "sulphate", name: "Manganese Sulphate", percentage: 0.3637 }, { id: "chloride", name: "Manganese Chloride", percentage: 0.4364 }, { id: "sulphate-monohydrate", name: "Manganese Sulphate Monohydrate", percentage: 0.3249 }, { id: "glycinate", name: "Manganese Glycinate", percentage: 0.2705 }, { id: "oxide", name: "Manganese Oxide", percentage: 0.6318 }
+                ],
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 2.3 }, { name: "Women (19+y)", rda: 1.8 }, { name: "Pregnancy", rda: 2.0 }, { name: "Lactation", rda: 2.6 }
+                ]
+            },
+            molybdenum: {
+                name: "Molybdenum",
+                saltForms: [
+                    { id: "pentoxide", name: "Molybdenum Pentoxide", percentage: 0.6665 }, { id: "sodium-molybdate", name: "from Sodium Molybdate", percentage: 0.4659 }, { id: "sodium-molybdate-dihydrate", name: "from Sodium Molybdate Dihydrate", percentage: 0.3965 }
+                ],
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 0.045 }, { name: "Pregnancy/Lactation", rda: 0.050 }
+                ]
+            },
+            potassium: {
+                name: "Potassium",
+                saltForms: [
+                    { id: "sulfate", name: "Potassium Sulfate", percentage: 0.4486 }, { id: "iodide", name: "Potassium Iodide", percentage: 0.2349, secondary: { name: "Iodine", percentage: 0.7644 } }, { id: "chloride", name: "Potassium Chloride", percentage: 0.5243 }, { id: "citrate", name: "Potassium Citrate", percentage: 0.1275 }, { id: "aspartate", name: "Aspartate Potassium", percentage: 0.1084 }, { id: "magnesium-citrate", name: "Potassium Magnesium Citrate", percentage: 0.1548, secondary: { name: "Magnesium", percentage: 0.0962 } }, { id: "phosphate-monobasic", name: "Potassium Phosphate Monobasic", percentage: 0.2873 }, { id: "carbonate", name: "Potassium Carbonate", percentage: 0.5656 }
+                ],
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 3400 }, { name: "Women (19+y)", rda: 2600 }, { name: "Pregnancy", rda: 2900 }, { name: "Lactation", rda: 2800 }
+                ]
+            },
+            selenium: {
+                name: "Selenium",
+                saltForms: [
+                    { id: "sodium-selenite", name: "from Sodium Selenite", percentage: 0.4565 }, { id: "sodium-selenate", name: "from Sodium Selenate", percentage: 0.4179 }
+                ],
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 0.055 }, { name: "Pregnancy", rda: 0.060 }, { name: "Lactation", rda: 0.070 }
+                ]
+            },
+            sodium: {
+                name: "Sodium",
+                saltForms: [
+                    { id: "bicarbonate", name: "Sodium Bicarbonate", percentage: 0.2735 }, { id: "carbonate", name: "Sodium Carbonate", percentage: 0.2168 }, { id: "chloride", name: "Sodium Chloride", percentage: 0.3932, secondary: { name: "Chloride", percentage: 0.6066 } }, { id: "salycinate", name: "Sodium Salycinate", percentage: 0.1435 }, { id: "salycylate-selenium", name: "Sodium Salycylate (Selenium)", percentage: 0.1135 }, { id: "molybdate", name: "Sodium Molybdate", percentage: 0.1115, secondary: { name: "Molybdenum", percentage: 0.4659 } }, { id: "molybdate-dihydrate", name: "Sodium Molybdate Dihydrate", percentage: 0.0949, secondary: { name: "Molybdenum", percentage: 0.3965 } }, { id: "selenite", name: "Sodium Selenite", percentage: 0.27, secondary: { name: "Selenium", percentage: 0.4565 } },
+                    { id: "selenate", name: "Sodium Selenate", percentage: 0.2433, secondary: { name: "Selenium", percentage: 0.4179 } },
+                    { id: "ascorbate", name: "Sodium Ascorbate", percentage: 0.115, secondary: { name: "Ascorbic Acid", percentage: 0.885 } }, { id: "benzoate", name: "Sodium Benzoate", percentage: 0.1594 }, { id: "citrate", name: "Sodium Citrate (Trisodium Citrate)", percentage: 0.2671 }, { id: "hydrochloride", name: "Sodium Hydrochloride", percentage: 0.0287 }
+                ],
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 1500 }
+                ]
+            },
+            zinc: {
+                name: "Zinc",
+                saltForms: [
+                    { id: "lactate", name: "Zinc Lactate", percentage: 0.2663 }, { id: "sulphate", name: "Zinc Sulphate", percentage: 0.4049 }, { id: "oxide", name: "Zinc Oxide", percentage: 0.8033 }, { id: "gluconate", name: "Zinc Gluconate", percentage: 0.1434 }, { id: "sulphate-monohydrate", name: "Zinc Sulphate Monohydrate", percentage: 0.3642 }, { id: "bisglycinate", name: "Zinc Bisglycinate", percentage: 0.3062 }, { id: "methionine", name: "Zinc Methionine", percentage: 0.2105 }, { id: "sulphate-heptahydrate", name: "Zinc Sulphate Heptahydrate", percentage: 0.2273 }, { id: "acetate", name: "Zinc Acetate", percentage: 0.3564 }
+                ],
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 11 }, { name: "Women (19+y)", rda: 8 }, { name: "Pregnancy", rda: 11 }, { name: "Lactation", rda: 12 }
+                ]
+            }
+        };
+
+        const vitaminData = {
+            a: {
+                name: "Vitamin A",
+                forms: [
+                    { id: "retinyl-acetate", name: "Retinyl Acetate", percentage: 1, conversion: { IUToMg: 0.000344 } },
+                    { id: "retinyl-palmitate", name: "Retinyl Palmitate", percentage: 1, conversion: { IUToMg: 0.00055 } },
+                    { id: "beta-carotene", name: "Beta-Carotene", percentage: 1, conversion: { IUToMg: 0.0006 } }
+                ],
+                rdaUnit: "mcg",
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 900 }, { name: "Women (19+y)", rda: 700 }, { name: "Pregnancy", rda: 770 }, { name: "Lactation", rda: 1300 }
+                ]
+            },
+            b1: {
+                name: "Thiamine (B1)",
+                forms: [
+                    { id: "mononitrate", name: "Thiamine Mononitrate", percentage: 0.8105 },
+                    { id: "hydrochloride", name: "Thiamine Hydrochloride", percentage: 0.7845 }
+                ],
+                rdaUnit: "mg",
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 1.2 }, { name: "Women (19+y)", rda: 1.1 }, { name: "Pregnancy/Lactation", rda: 1.4 }
+                ]
+            },
+            b2: {
+                name: "Riboflavin (B2)",
+                forms: [
+                    { id: "riboflavin", name: "Riboflavin", percentage: 1 },
+                    { id: "riboflavin-5-phosphate", name: "Riboflavin 5'-Phosphate", percentage: 0.73 }
+                ],
+                rdaUnit: "mg",
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 1.3 }, { name: "Women (19+y)", rda: 1.1 }, { name: "Pregnancy", rda: 1.4 }, { name: "Lactation", rda: 1.6 }
+                ]
+            },
+            b3: {
+                name: "Niacin (B3)",
+                forms: [
+                    { id: "niacin", name: "Niacin", percentage: 1 },
+                    { id: "niacinamide", name: "Niacinamide (Nicotinamide)", percentage: 1 }
+                ],
+                rdaUnit: "mg",
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 16 }, { name: "Women (19+y)", rda: 14 }, { name: "Pregnancy", rda: 18 }, { name: "Lactation", rda: 17 }
+                ]
+            },
+            b5: {
+                name: "Pantothenic Acid (B5)",
+                forms: [
+                    { id: "calcium-pantothenate", name: "from Calcium Pantothenate", percentage: 0.916 },
+                    { id: "d-pantothenic-acid", name: "D-Pantothenic Acid", percentage: 1 }
+                ],
+                rdaUnit: "mg",
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 5 }, { name: "Pregnancy", rda: 6 }, { name: "Lactation", rda: 7 }
+                ]
+            },
+            b6: {
+                name: "Pyridoxine (B6)",
+                forms: [
+                    { id: "pyridoxine-hcl", name: "Pyridoxine HCl", percentage: 0.8227 },
+                    { id: "pyridoxal-5-phosphate", name: "Pyridoxal 5'-Phosphate (P-5-P)", percentage: 1 }
+                ],
+                rdaUnit: "mg",
+                rdaGroups: [
+                    { name: "Adults (19-50y)", rda: 1.3 }, { name: "Men (51+y)", rda: 1.7 }, { name: "Women (51+y)", rda: 1.5 }, { name: "Pregnancy", rda: 1.9 }, { name: "Lactation", rda: 2.0 }
+                ]
+            },
+            b7: {
+                name: "Biotin (B7)",
+                forms: [ { id: "biotin", name: "Biotin", percentage: 1 } ],
+                rdaUnit: "mcg",
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 30 }, { name: "Pregnancy", rda: 30 }, { name: "Lactation", rda: 35 }
+                ]
+            },
+            b9: {
+                name: "Folate (B9)",
+                forms: [
+                    { id: "folic-acid", name: "Folic Acid", percentage: 1 },
+                    { id: "l-methylfolate", name: "L-Methylfolate", percentage: 1 }
+                ],
+                rdaUnit: "mcg",
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 400 }, { name: "Pregnancy", rda: 600 }, { name: "Lactation", rda: 500 }
+                ]
+            },
+            b12: {
+                name: "Cobalamin (B12)",
+                forms: [
+                    { id: "cyanocobalamin", name: "Cyanocobalamin", percentage: 1 },
+                    { id: "methylcobalamin", name: "Methylcobalamin", percentage: 1 }
+                ],
+                rdaUnit: "mcg",
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 2.4 }, { name: "Pregnancy", rda: 2.6 }, { name: "Lactation", rda: 2.8 }
+                ]
+            },
+            c: {
+                name: "Ascorbic Acid (C)",
+                forms: [
+                    { id: "ascorbic-acid", name: "Ascorbic Acid", percentage: 1 },
+                    { id: "sodium-ascorbate", name: "from Sodium Ascorbate", percentage: 0.885 },
+                    { id: "calcium-ascorbate", name: "from Calcium Ascorbate", percentage: 0.826 }
+                ],
+                rdaUnit: "mg",
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 90 }, { name: "Women (19+y)", rda: 75 }, { name: "Pregnancy", rda: 85 }, { name: "Lactation", rda: 120 }
+                ]
+            },
+            d: {
+                name: "Calciferol (D)",
+                forms: [
+                    { id: "cholecalciferol-d3", name: "Cholecalciferol (D3)", percentage: 1, conversion: { IUToMg: 0.000025 } },
+                    { id: "ergocalciferol-d2", name: "Ergocalciferol (D2)", percentage: 1, conversion: { IUToMg: 0.000025 } }
+                ],
+                rdaUnit: "IU",
+                rdaConversionFactor: 0.000025, 
+                rdaGroups: [
+                    { name: "Adults (19-70y)", rda: 600 }, { name: "Adults (71+y)", rda: 800 }, { name: "Pregnancy/Lactation", rda: 600 }
+                ]
+            },
+            e: {
+                name: "Tocopherol (E)",
+                forms: [
+                    { id: "d-alpha-tocopherol", name: "d-alpha-tocopherol (natural)", percentage: 1, conversion: { IUToMg: 0.67 } },
+                    { id: "dl-alpha-tocopherol", name: "dl-alpha-tocopherol (synthetic)", percentage: 1, conversion: { IUToMg: 0.90 } } 
+                ],
+                rdaUnit: "mg",
+                rdaGroups: [
+                    { name: "Adults (19+y)", rda: 15 }, { name: "Pregnancy", rda: 15 }, { name: "Lactation", rda: 19 }
+                ]
+            },
+            k: {
+                name: "Vitamin K",
+                forms: [
+                    { id: "k1-phytonadione", name: "K1 (Phytonadione)", percentage: 1 },
+                    { id: "k2-mk4", name: "K2 (Menaquinone-4)", percentage: 1 },
+                    { id: "k2-mk7", name: "K2 (Menaquinone-7)", percentage: 1 }
+                ],
+                rdaUnit: "mcg",
+                rdaGroups: [
+                    { name: "Men (19+y)", rda: 120 }, { name: "Women (19+y)", rda: 90 }
+                ]
+            }
+        };
+
+        // --- SETUP AND EVENT LISTENERS ---
+        // (This section is unchanged)
+        document.addEventListener('DOMContentLoaded', () => {
+            const populateSelect = (selectId, data) => {
+                const selectElement = document.getElementById(selectId);
+                const sortedKeys = Object.keys(data).sort((a, b) => data[a].name.localeCompare(data[b].name));
+                sortedKeys.forEach(key => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = data[key].name;
+                    selectElement.appendChild(option);
+                });
+            };
+            populateSelect('mineral-select', mineralData);
+            populateSelect('vitamin-select', vitaminData);
+        });
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        document.getElementById('mineral-select').addEventListener('change', function() {
+            const mineral = this.value;
+            const saltFormSelect = document.getElementById('mineral-salt-form');
+            saltFormSelect.innerHTML = '<option value="">-- Select --</option>';
+            if (mineral && mineralData[mineral]) {
+                mineralData[mineral].saltForms
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .forEach(form => {
+                        const option = document.createElement('option');
+                        option.value = form.id;
+                        option.textContent = form.name;
+                        saltFormSelect.appendChild(option);
+                    });
+            }
+        });
+
+        document.getElementById('vitamin-select').addEventListener('change', function() {
+            const vitamin = this.value;
+            const formSelect = document.getElementById('vitamin-form');
+            formSelect.innerHTML = '<option value="">-- Select --</option>';
+            if (vitamin && vitaminData[vitamin]) {
+                vitaminData[vitamin].forms
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .forEach(form => {
+                        const option = document.createElement('option');
+                        option.value = form.id;
+                        option.textContent = form.name;
+                        formSelect.appendChild(option);
+                    });
+            }
+        });
+
+        // --- MINERAL CALCULATION (REVERSED) ---
+        document.getElementById('calculate-mineral').addEventListener('click', function() {
+            const mineral = document.getElementById('mineral-select').value;
+            const saltFormId = document.getElementById('mineral-salt-form').value;
+            // CHANGED: Get value from the new input ID
+            const elementalAmount = parseFloat(document.getElementById('mineral-elemental-amount').value);
+            const errorDiv = document.getElementById('mineral-error');
+            const resultsDiv = document.getElementById('mineral-results');
+            
+            errorDiv.textContent = '';
+            resultsDiv.style.display = 'none';
+
+            if (mineral && saltFormId && !isNaN(elementalAmount) && elementalAmount > 0) {
+                const mineralInfo = mineralData[mineral];
+                const saltForm = mineralInfo.saltForms.find(f => f.id === saltFormId);
+                
+                if (!saltForm) {
+                    errorDiv.textContent = 'An error occurred. Please re-select the salt form.';
+                    return;
+                }
+
+                const elementalPercentage = saltForm.percentage;
+                
+                if (typeof elementalPercentage !== 'number' || elementalPercentage === 0) {
+                    errorDiv.textContent = `Calculation for "${saltForm.name}" is not available or percentage is zero.`;
+                    return;
+                }
+
+                // --- REVERSED CALCULATION ---
+                const requiredSaltDose = elementalAmount / elementalPercentage;
+                // -----------------------------
+                
+                // CHANGED: Update the new result ID
+                document.getElementById('required-salt-dose-result').textContent = requiredSaltDose.toFixed(3) + ' mg';
+                resultsDiv.style.display = 'block';
+                
+                // RDA calculation is the same, based on the elementalAmount entered
+                const rdaResults = document.getElementById('mineral-rda-results');
+                rdaResults.innerHTML = '';
+                mineralInfo.rdaGroups.forEach(group => {
+                    const percentage = (elementalAmount / group.rda) * 100;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${group.name}</td>
+                        <td>${group.rda} mg</td>
+                        <td>${percentage.toFixed(1)}%</td>
+                    `;
+                    rdaResults.appendChild(row);
+                });
+                
+                // Secondary info calculation is also reversed
+                const secondaryInfo = saltForm.secondary;
+                const secondaryDiv = document.getElementById('mineral-secondary-info');
+                if (secondaryInfo && typeof secondaryInfo.percentage === 'number') {
+                    // CHANGED: Based on requiredSaltDose
+                    const secondaryAmount = requiredSaltDose * secondaryInfo.percentage;
+                    secondaryDiv.innerHTML = `
+                        <h4>Secondary Component</h4>
+                        <p>This dose of ${requiredSaltDose.toFixed(2)} mg ${saltForm.name} also provides:</p>
+                        <p><strong>${secondaryInfo.name}:</strong> ${secondaryAmount.toFixed(2)} mg</p>
+                    `;
+                    secondaryDiv.style.display = 'block';
+                } else {
+                    secondaryDiv.innerHTML = '';
+                    secondaryDiv.style.display = 'none';
+                }
+            } else {
+                errorDiv.textContent = 'Please select a mineral, salt form, and enter a valid desired amount.';
+            }
+        });
+
+        // --- VITAMIN CALCULATION (REVERSED) ---
+        document.getElementById('calculate-vitamin').addEventListener('click', function() {
+            const vitamin = document.getElementById('vitamin-select').value;
+            const formId = document.getElementById('vitamin-form').value;
+            let unit = document.querySelector('input[name="vitamin-units"]:checked').value;
+            // CHANGED: Get value from the new input ID
+            const desiredElementalAmount = parseFloat(document.getElementById('vitamin-elemental-amount').value);
+            const errorDiv = document.getElementById('vitamin-error');
+            const resultsDiv = document.getElementById('vitamin-results');
+
+            errorDiv.textContent = '';
+            resultsDiv.style.display = 'none';
+
+            if (vitamin && formId && !isNaN(desiredElementalAmount) && desiredElementalAmount > 0) {
+                const vitaminInfo = vitaminData[vitamin];
+                const form = vitaminInfo.forms.find(f => f.id === formId);
+
+                if (!form) {
+                    errorDiv.textContent = 'An error occurred. Please re-select the vitamin form.';
+                    return;
+                }
+                
+                // 1. Convert the DESIRED elemental amount to mg for a standardized calculation
+                let desiredElementalAmountInMg = desiredElementalAmount;
+                if (unit === 'mcg') {
+                    desiredElementalAmountInMg = desiredElementalAmount / 1000;
+                } else if (unit === 'IU') {
+                    if (!form.conversion || !form.conversion.IUToMg) {
+                        errorDiv.textContent = `IU to mg conversion is not available for ${form.name}.`;
+                        return;
+                    }
+                    desiredElementalAmountInMg = desiredElementalAmount * form.conversion.IUToMg;
+                }
+                
+                const elementalPercentage = form.percentage;
+                 if (typeof elementalPercentage !== 'number' || elementalPercentage === 0) {
+                    errorDiv.textContent = `Calculation for "${form.name}" is not available or percentage is zero.`;
+                    return;
+                }
+
+                // --- REVERSED CALCULATION ---
+                const requiredSaltDose = desiredElementalAmountInMg / elementalPercentage;
+                // -----------------------------
+                
+                // CHANGED: Update the new result ID
+                document.getElementById('required-vitamin-dose-result').textContent = requiredSaltDose.toFixed(3) + ' mg';
+                resultsDiv.style.display = 'block';
+                
+                // 2. Calculate RDA percentages (based on the desiredElementalAmountInMg)
+                const rdaResults = document.getElementById('vitamin-rda-results');
+                rdaResults.innerHTML = '';
+                vitaminInfo.rdaGroups.forEach(group => {
+                    const rdaValue = group.rda;
+                    let rdaUnit = vitaminInfo.rdaUnit; 
+                    
+                    let rdaInMg = rdaValue;
+                    if (rdaUnit === 'mcg') {
+                        rdaInMg = rdaValue / 1000;
+                    } else if (rdaUnit === 'IU') {
+                        if (!vitaminInfo.rdaConversionFactor) {
+                            console.error(`RDA is in IU for ${vitaminInfo.name} but no rdaConversionFactor is defined.`);
+                            return; 
+                        }
+                        rdaInMg = rdaValue * vitaminInfo.rdaConversionFactor;
+                    }
+
+                    // Compare the desired mg amount to the RDA mg amount
+                    const percentage = (desiredElementalAmountInMg / rdaInMg) * 100;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${group.name}</td>
+                        <td>${rdaValue} ${rdaUnit}</td>
+                        <td>${percentage.toFixed(1)}%</td>
+                    `;
+                    rdaResults.appendChild(row);
+                });
+
+                // 3. Handle secondary info
+                const secondaryInfo = form.secondary;
+                const secondaryDiv = document.getElementById('vitamin-secondary-info');
+                if (secondaryInfo && typeof secondaryInfo.percentage === 'number') {
+                    // CHANGED: Based on requiredSaltDose
+                    const secondaryAmount = requiredSaltDose * secondaryInfo.percentage;
+                    secondaryDiv.innerHTML = `
+                        <h4>Secondary Component</h4>
+                        <p>This dose of ${requiredSaltDose.toFixed(2)} mg ${form.name} also provides:</p>
+                        <p><strong>${secondaryInfo.name}:</strong> ${secondaryAmount.toFixed(2)} mg</p>
+                    `;
+                    secondaryDiv.style.display = 'block';
+                } else {
+                    secondaryDiv.innerHTML = '';
+                    secondaryDiv.style.display = 'none';
+                }
+
+            } else {
+                errorDiv.textContent = 'Please select a vitamin, form, and enter a valid desired amount.';
+            }
+        });
+    </script>
 </body>
 </html>
